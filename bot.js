@@ -11,6 +11,16 @@ bot.on("ready", () => {
     });
 });
 
+bot.on("guildCreate", (guild) => {
+    guild.createRole({ name: "Muted", color: "#313131" });
+    console.log("Joined a new server: " + guild.name);
+    console.log("It has " + guild.memberCount + " members ;)");
+});
+
+bot.on("guildDelete", (guild) => {
+    console.log("Left the server:" + guild.name);
+});
+
 let connectionDispatcher;
 
 bot.on("message", (message) => {
