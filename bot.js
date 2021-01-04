@@ -34,7 +34,7 @@ bot.on("message", (message) => {
 
     const voiceChannel = message.member.voice.channel;
 
-    if (message.member.hasPermission("ADMINISTRATOR")) {
+    if (message.member.hasPermission("MANAGE_CHANNELS")) {
         if (command === "play") {
             if (!voiceChannel) {
                 return message.channel.send(
@@ -100,7 +100,7 @@ bot.on("message", (message) => {
             message.channel.send(helpEmbed);
         }
     }
-    if (!message.member.hasPermission("ADMINISTRATOR")) {
+    if (!message.member.hasPermission("MANAGE_CHANNELS")) {
         message.channel.send(
             ":no_entry: Insufficient Permissions! Only an Admin can use this!"
         );
