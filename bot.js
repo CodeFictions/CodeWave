@@ -23,7 +23,7 @@ bot.on("guildDelete", (guild) => {
 
 let connectionDispatcher;
 
-bot.on("message", (message) => {
+bot.on("message", async (message) => {
     if (message.author.bot) return;
     if (message.content.indexOf(config.prefix) !== 0) return;
     const args = message.content
@@ -35,7 +35,7 @@ bot.on("message", (message) => {
     const voiceChannel = message.member.voice.channel;
 
     if (message.member.hasPermission("MANAGE_CHANNELS")) {
-        if (command === "play") {
+        if (command === "start") {
             if (!voiceChannel) {
                 return message.channel.send(
                     "You need to be in a voice channel!"
@@ -86,7 +86,7 @@ bot.on("message", (message) => {
                 .setTitle(
                     `CodeWave's commands list | prefix \`${config.prefix}\``
                 )
-                .addField("```!radio play```", "Starting Playing the Radio!")
+                .addField("```!radio start```", "Starting Playing the Radio!")
                 .addField(
                     "```!radio stop```",
                     "Stopping the music and leaving the VC!"
@@ -105,4 +105,6 @@ bot.on("message", (message) => {
             ":no_entry: Insufficient Permissions! Only an Admin can use this!"
         );
     }
+
+    if (message.author.bot) return;
 });

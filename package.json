@@ -5,13 +5,16 @@
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon bot"
+    "dev": "nodemon music"
   },
   "author": "Hasib Al Rashid",
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "discord.js": "^12.5.1",
-    "ffmpeg-static": "^4.2.7"
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "fluent-ffmpeg": "^2.1.2",
+    "ytdl-core": "^4.4.3"
   }
 }
