@@ -1,8 +1,9 @@
+require("dotenv").config();
+
 const Discord = require("discord.js"),
     client = new Discord.Client(),
     settings = {
         prefix: "!",
-        token: "NzkzODc1Mjc2OTk5NDI2MDQ4.X-yn9w.hzTdeLeEyvux4xsMwOxrUiq_Op8",
     };
 
 const { Player } = require("discord-player");
@@ -34,4 +35,4 @@ client.on("message", async (message) => {
     }
 });
 
-client.login(settings.token);
+client.login(process.env.TOKEN);

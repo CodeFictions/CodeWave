@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const bot = new Discord.Client();
 const config = require("./config.json");
 
+require("dotenv").config();
+
 bot.login(config.token);
 
 bot.on("ready", () => {
