@@ -15,12 +15,9 @@ const distube = new DisTube(client, {
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setActivity(
-        `${client.channels.cache.size} Channels | !radio help`,
-        {
-            type: "WATCHING",
-        }
-    );
+    client.user.setActivity(`${client.channels.cache.size} Channels | ?help`, {
+        type: "WATCHING",
+    });
 });
 
 client.on("guildCreate", (guild) => {
