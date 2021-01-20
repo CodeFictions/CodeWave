@@ -12,15 +12,10 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "discord-player": "^3.2.1",
-    "discord-ytdl-core": "^5.0.0",
     "discord.js": "^12.5.1",
+    "distube": "^2.8.8",
     "dotenv": "^8.2.0",
-    "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.2.7",
-    "merge-options": "^3.0.4",
-    "node-fetch": "^2.6.1",
-    "spotify-url-info": "^2.2.0",
-    "ytpl": "^2.0.4",
-    "ytsr": "^3.2.1"
+    "ytdl-core": "^4.4.3"
   }
 }
