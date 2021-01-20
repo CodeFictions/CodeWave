@@ -2,13 +2,11 @@ require("dotenv").config();
 
 const Discord = require("discord.js");
 const DisTube = require("distube");
-const client = new Discord.Client({ disableMentions: "everone" });
-const config = {
-    prefix: "?",
-    token: process.env.TOKEN,
-};
+const { prefix } = require("./config.json");
+const client = new Discord.Client();
+
 const distube = new DisTube(client, {
-    searchSongs: true,
+    searchSongs: false,
     emitNewSongOnly: true,
     highWaterMark: 1 << 25,
 });
@@ -42,20 +40,17 @@ const filters = [
     "flanger",
 ];
 
-//events
-client.login(config.token);
+client.login(process.env.TOKEN);
 
 client.on("message", async (message) => {
     if (message.author.bot) {
         return;
     }
 
-    if (!message.guild) return;
-    const args = message.content
-        .slice(config.prefix.length)
-        .trim()
-        .split(/ +/g);
-    const command = args.shift();
+    if (message.author.bot || !message.content.startsWith(prefix)) return;
+
+    const args = message.content.slice(prefix.length).split(" ");
+    const command = args.shift().toLowerCase();
 
     const voiceChannel = message.member.voice.channel;
     if (command === "radio-start") {
@@ -75,7 +70,21 @@ client.on("message", async (message) => {
             connectionDispatcher = connection.play(
                 "https://coderadio-admin.freecodecamp.org/radio/8010/radio.mp3"
             );
-            return message.channel.send("Playing!");
+
+            const radio_play_embed = new Discord.MessageEmbed()
+                .setTitle("Started Playing the Radio!")
+                .setDescription(
+                    "**:white_check_mark: Joined the Voice Channel and Playing the radio.** \n \n *Powered by FreeCodeCamp Radio*"
+                )
+                .setThumbnail(
+                    "https://media.discordapp.net/attachments/793772583946027050/801479779441967144/Z.png"
+                )
+                .setColor("RANDOM")
+                .setFooter(
+                    client.user.username,
+                    client.user.displayAvatarURL()
+                );
+            message.channel.send(radio_play_embed);
         });
     }
 
@@ -83,7 +92,9 @@ client.on("message", async (message) => {
         if (connectionDispatcher) {
             connectionDispatcher.end();
             voiceChannel.leave();
-            return message.channel.send("Stopped");
+            message.channel.send(
+                ":white_check_mark: Stopped the Radio and left the Voice channel!"
+            );
         }
     }
 
@@ -91,30 +102,11 @@ client.on("message", async (message) => {
         if (connectionDispatcher) {
             if (connectionDispatcher) {
                 connectionDispatcher.end();
-                return message.channel.send("Paused");
+                return message.channel.send(
+                    ":white_check_mark: Paused the Music and resting in the voice channel!"
+                );
             }
         }
-    }
-
-    if (command === "test") {
-        message.channel.send("Tesiting Succesful");
-    }
-
-    if (command === "help") {
-        const helpEmbed = new Discord.MessageEmbed()
-            .setTitle(`CodeWave's commands list | prefix \`${config.prefix}\``)
-            .addField("```!radio start```", "Starting Playing the Radio!")
-            .addField(
-                "```!radio stop```",
-                "Stopping the music and leaving the VC!"
-            )
-            .addField(
-                "```!radio pause```",
-                "Give it a Break! Just kiddin', Pause and Chill all you want without leaving the Voice Channel!"
-            )
-            .setImage(bot.user.avatarURL)
-            .setColor("RANDOM");
-        message.channel.send(helpEmbed);
     }
 
     if (command === "ping") {
@@ -127,18 +119,34 @@ client.on("message", async (message) => {
         );
     }
 
+    if (message.content === "test") {
+        const to_play = args.join(" ");
+        message.channel.send(`${to_play}`);
+    }
+
     if (command === "play" || command === "p") {
-        embedbuilder(client, message, "YELLOW", "Searching!", args.join(" "));
+        const to_play = args.join(" ");
+
+        message.channel.send(
+            "<:YouTube:801465200775135282> **Searching** :mag_right: `" +
+                `${to_play}` +
+                "`"
+        );
         return distube.play(message, args.join(" "));
     }
+
     if (command === "skip" || command === "s") {
-        embedbuilder(client, message, "YELLOW", "SKIPPED!", `Skipped the song`);
+        message.channel.send(":white_check_mark: Song Skipped!");
         return distube.skip(message);
     }
+
     if (command === "stop" || command === "leave") {
-        embedbuilder(client, message, "RED", "STOPPED!", `Leaved the channel`);
-        return distube.stop(message);
+        message.channel.send(
+            ":white_check_mark: Cleared the Queue and Left the Voice Channel!"
+        );
+        distube.stop(message);
     }
+
     if (command === "seek") {
         embedbuilder(
             client,
@@ -207,31 +215,6 @@ client.on("message", async (message) => {
                 "RED",
                 "ERROR",
                 `Please use a number between **0** and **2**   |   *(0: disabled, 1: Repeat a song, 2: Repeat all the queue)*`
-            );
-        }
-    }
-    if (command === "jump") {
-        let queue = distube.getQueue(message);
-        if (0 <= Number(args[0]) && Number(args[0]) <= queue.songs.length) {
-            embedbuilder(
-                client,
-                message,
-                "RED",
-                "ERROR",
-                `Jumped ${parseInt(args[0])} songs!`
-            );
-            return distube
-                .jump(message, parseInt(args[0]))
-                .catch((err) => message.channel.send("Invalid song number."));
-        } else {
-            embedbuilder(
-                client,
-                message,
-                "RED",
-                "ERROR",
-                `Please use a number between **0** and **${
-                    DisTube.getQueue(message).length
-                }**   |   *(0: disabled, 1: Repeat a song, 2: Repeat all the queue)*`
             );
         }
     }
